@@ -8,13 +8,13 @@ Proyecto de observabilidad con Spring Boot + Prometheus + Grafana.
 
 
 ## 🏗️ Construir y levantar todo
-### Opcion 1 - Ejecucion local de la app sin docker
+### Opcion 1 - Ejecucion local de la app sin Docker
 ```bash
 ./mvnw spring-boot:run
 docker compose -f docker-compose.local.yml up
 ```
 
-### Opcion 2
+### Opcion 2 - Ejecución local de todos los servicios con Docker
 ```bash
 docker compose -f docker-compose.full.yml up
 ```
@@ -24,12 +24,10 @@ Servicios ejecutados:
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000  (usuario `admin`, contraseña `admin`)
 
-- El endpoint `/api/hello` introduce **latencia** y **errores 5xx aleatorios** (20%) para demostrar las métricas y la alerta.
+**IMPORTANTE:** El endpoint `/api/hello` introduce latencia y errores 5xx aleatorios(20%) para demostrar las métricas y la alerta.
 
 
-## 🚨 Alertas configuradas (Prometheus)
-
-## 🔎 ¿Cómo probar las alertas?
+## 🔎 Monitoreo y Dashboards
 
 1. Generar tráfico continuo:
    ```bash
