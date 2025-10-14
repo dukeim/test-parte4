@@ -1,50 +1,50 @@
 # Spring Boot + Prometheus + Grafana: Observability Demo
 
-Proyecto mínimo para evaluación técnica con **métricas (TPS, P95)**, **errores 5xx** y **alerta crítica** (>10% de 5xx por 2 minutos).
+Proyecto de observabilidad con Spring Boot + Prometheus + Grafana.
 
 ## 📦 Requisitos
 - Docker y Docker Compose
-- (Opcional) Maven y JDK 17 si quieres ejecutar local sin Docker
+- Maven y JDK 21 si se necesita ejecutar local sin Docker
+
 
 ## 🏗️ Construir y levantar todo
+### Opcion 1 - Ejecucion local de la app sin docker
 ```bash
-docker compose up --build
+./mvnw spring-boot:run
+docker compose -f docker-compose.local.yml up
 ```
-Servicios:
+
+### Opcion 2
+```bash
+docker compose -f docker-compose.full.yml up
+```
+
+Servicios ejecutados:
 - App: http://localhost:8080/api/hello
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000  (usuario `admin`, contraseña `admin`)
 
-> Grafana ya viene **provisionado** con el datasource Prometheus y el dashboard
-**Spring Boot Observability Dashboard**.
+- El endpoint `/api/hello` introduce **latencia** y **errores 5xx aleatorios** (20%) para demostrar las métricas y la alerta.
 
 
 ## 🚨 Alertas configuradas (Prometheus)
 
 ## 🔎 ¿Cómo probar las alertas?
 
-1. Ejecutar la aplicación (local o en contenedor).
-2. Generar tráfico continuo:
+1. Generar tráfico continuo:
    ```bash
-   while true; do curl -s http://localhost:8080/api/hello >/dev/null; done
+   while true; do curl -s http://localhost:8080/api/hello >/dev/null; done &
    ```
-3. Ver en Prometheus: [http://localhost:9090/alerts](http://localhost:9090/alerts)
-
+2. Ver en Prometheus: [http://localhost:9090/alerts](http://localhost:9090/alerts)
 Verás activarse:
 - **HighErrorRate** → si hay errores 5xx sostenidos.
-- **HighLatencyWarning / Critical** → si la latencia P95 supera los umbrales definidos.
+- **HighLatencyWarning** → si la latencia P95 supera los umbrales definidos (200 ms).
+- **HighLatencyCritical** → si la latencia P95 supera los umbrales definidos (300 ms).
 
-Cómo verificar:
-1. Abre Prometheus → **Alerts** → verás **HighErrorRate** en *Pending* / *Firing* cuando supere el umbral.
-2. En Grafana puedes añadir alertas adicionales si deseas (opcional).
+3. Ver en Grafana: [http://localhost:3000/dashboards](http://localhost:3000/dashboards)
 
 
 ## 🧹 Detener y limpiar
 ```bash
 docker compose down -v
 ```
-
-## 📝 Notas para la evaluación
-- El endpoint `/api/hello` introduce **latencia** y **errores 5xx aleatorios** (20%) para demostrar las métricas y la alerta.
-- El dashboard muestra **TPS**, **Error %**, y **P95** con umbrales (verde/ámbar/rojo).
-- Puedes justificar SLOs: p.ej., *P95 < 800ms*, *Error 5xx < 5%*.
