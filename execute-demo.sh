@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+type=${1:-"local"}
+
 echo "📥 Obteniendo secretos desde AWS SSM..."
 
 mkdir -p secrets
@@ -17,10 +19,16 @@ MSYS2_ARG_CONV_EXCL="*" aws ssm get-parameter --name "/grafana/admin/password" \
 echo "✅ Secretos leidos desde SSM..."
 
 # Levantar stack localmente
-docker compose -f docker-compose.local.yml up -d
+if [ "$type" == "local" ]; then
+  echo "🧪 La aplicacion debe ejecutarse con Maven: ./mvnw spring-boot:run"
+  echo "🚀 Levantando Prometheus y Grafana con Docker..."
+  docker compose -f docker-compose.local.yml up -d
+else
+  echo "🚀 Levantando stack full docker..."
+  docker compose -f docker-compose.full.yml up -d
+fi
 
 # Borrar secretos locales después del deploy
-echo "🧹 Eliminando archivos temporales..."
 rm -rf secrets
 
 echo "🚀 Stack levantado correctamente. "
