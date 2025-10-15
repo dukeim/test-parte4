@@ -6,8 +6,9 @@ Proyecto de observabilidad con Spring Boot + Prometheus + Grafana.
 - Docker y Docker Compose
 - Maven y JDK 21 si se necesita ejecutar local sin Docker
 - Crear los siguientes parámetros en AWS SSM
-    */grafana/admin/username
-    */grafana/admin/password
+  
+    - /grafana/admin/username
+    - /grafana/admin/password
 
 ## 🏗️ Construir y levantar todo
 ### Opcion 1 - Ejecucion local de la app sin Docker
